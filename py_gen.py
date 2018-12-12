@@ -1,5 +1,4 @@
 import random
-from itertools import combinations
 NIND = 1000
 NSNPS = 20000
 NCOMBS = 320000
