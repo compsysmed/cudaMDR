@@ -14,7 +14,8 @@ int NIND;
 float THR = 1.0;
 int BSx = 256;
 int NUMCOMBS;
-int GSx = ((NUMCOMBS+BSx-1) / BSx );
+//int GSx = ((NUMCOMBS+BSx-1) / BSx );
+int GSx = 12500;
 int ORDER = 3;
 int CV = 1;
 char* phenoFile;
@@ -291,7 +292,8 @@ void parseArgs(int argc, char **argv){
     else if(!strcmp(argv[i], "-out"))
       outputFile = argv[++i];
     else if(!strcmp(argv[i], "-bs"))
-      BSx = 12500; //atoi(argv[++i]);
+      int a = 1;
+      //BSx = 12500; //atoi(argv[++i]);
     else if(!strcmp(argv[i], "-help") || !strcmp(argv[i], "-h")){
     printf("\nusage example: \n  ./MDR_main9 -cf \"../combinations7\" -n_combs 3200000 -gf \"../geno7\" -n_inds 6000 -n_snps 20000 -pf \"../pheno7\" -ord 3 -thr 1 -cv 1 -bs 256 -out \"../out7\"  \n\n");
 	    printf("cf      = combinations file, see README\n");
@@ -520,7 +522,7 @@ int main(int argc, char **argv)
 	dim3 dimGrid(GSx);//,GSy,GSz);
 	
 	printf("\ncalling the kernel with this configuration:\n");
-	printf(" interaction order: %d\n NSNPS: %d\n NIND: %d\n # cross validations: %d\n THRESHOLD: %f\n #BLOCKS: %d\n BLOCK SIZE: %d\n",ORDER, NSNPS, NIND, CV, THR, GSx, BSx);
+	printf(" interaction order: %d\n NSNPS: %d\n NIND: %d\n # cross validations: %d\n THRESHOLD: %f\n GRID SIZE: %d\n BLOCK SIZE: %d\n",ORDER, NSNPS, NIND, CV, THR, GSx, BSx);
 
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
