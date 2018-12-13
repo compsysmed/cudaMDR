@@ -180,7 +180,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		}
 
 		//write result to global memory
-		*(dev_output + NUMCOMBS * cv + 2 * tid + 0) = train_error;
+		*(dev_output + NUMCOMBS * 0 + 2 * tid + 0) = train_error;
 	
 	
 	
@@ -679,12 +679,12 @@ int main(int argc, char **argv)
 	fpout = fopen(outputFile, "w");
 	
 	if (CV < 0){
-		fprintf(fpout,"---------- error ----------\n", cv+1, CV);
+		fprintf(fpout,"---------- error ----------\n");
 		for (int j = 0; j < NUMCOMBS; j++){
 			fprintf(fpout,"<snp%d,snp%d,snp%d> %f\n", *(combinations + j),*(combinations + j + 1), 
-			*(combinations + j + 2), *(output + cv * NUMCOMBS + 2 * j));
+			*(combinations + j + 2), *(output + 0 * NUMCOMBS + 2 * j));
+		}
 	}
-	
 	
   	for (int cv = 0; cv < CV; cv++){
   		fprintf(fpout,"---------- CV %d/%d train_error test_error ----------\n", cv+1, CV);
