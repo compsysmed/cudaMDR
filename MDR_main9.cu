@@ -46,15 +46,7 @@ __device__ int dev_rand() {
 
 __constant__ int dev_v_pheno[6000];
 __constant__ int dev_cv_indices[6000];
-
-int NSNPS;
-int NIND;
-float THR = 1;
-int BSx = 256;
-int NUMCOMBS;
-int GSx = ((NUMCOMBS+BSx-1) / BSx );
-int ORDER = 3;
-int CV = 1;
+	
 
 __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinations, int NSNPS, int NIND, float THR, int NUMCOMBS, int ORDER, int CV ) {
     
@@ -63,10 +55,11 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	//__shared__ float cache[BS][threadsPerBlock];
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 	//printf(" %d ", tid);
-	int thread_combination[ORDER]; //a combination (thread level)
+	int thread_combination = (int*)malloc(ORDER * sizeof(int));
+	//int thread_combination =[ORDER]; //a combination (thread level)
 	//retrieve the combination indices
 	for (int i=0; i< ORDER; i++) {
-		thread_combination[i] = *(dev_combinations + tid * ORDER + i);
+		*(thread_combination + i) = *(dev_combinations + tid * ORDER + i);
 	}
 	//printf("thread with tid %d is assigned combination: <%d, %d, %d>\n", tid, thread_combination[0], 
 	//thread_combination[1], thread_combination[2]); 
