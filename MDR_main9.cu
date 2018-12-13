@@ -66,16 +66,16 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	//thread_combination[1], thread_combination[2]); 
 	
 	//retrieve the genotype of each snp in the combination, from SNPvalues, for ALL individuals
-	int thread_geno[NIND * ORDER];
+	int* thread_geno = (int*)malloc(NIND * ORDER * sizeof(int));
 	for (int i=0; i< ORDER; i++) {
 		for (int j=0; j< NIND; j++) {
-			thread_geno[i * NIND + j] = *(dev_SNP_values + NIND * *(thread_combination + i) + j);
+			*(thread_geno + i * NIND + j) = *(dev_SNP_values + NIND * *(thread_combination + i) + j);
 		}
 	}
 	
 	if (tid == TESTCOMB){
 			for (int i=0; i< 20; i++) {
-				printf("thread %d %d-th-snp's geno: %d\n", tid, i, thread_geno[i]);
+				printf("thread %d %d-th-snp's geno: %d\n", tid, i, *(thread_geno + i));
 			}
 		}
 	
@@ -106,9 +106,9 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 if ((n >= int((cv/float(CV))*NIND)) && (n <= ((cv+1)/float(CV))*NIND )) //reserved for test
 			 	continue;
 			 ind = *(dev_cv_indices + n);
-			 f = thread_geno[0 * NIND + ind]; //1st snp geno
-			 s = thread_geno[1 * NIND + ind]; //2nd snp geno
-			 t = thread_geno[2 * NIND + ind]; //3rd snp geno
+			 f = (thread_geno + 0 * NIND + ind); //1st snp geno
+			 s = (thread_geno + 1 * NIND + ind); //2nd snp geno
+			 t = (thread_geno + 2 * NIND + ind); //3rd snp geno
 			 if (int(*(dev_v_pheno + ind))) //get the pheno
 			 	thread_table[f][s][t].cases += 1;
 			 else
@@ -166,8 +166,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 						if (tid == TESTCOMB){
 							printf("tid %d (comb. <%d, %d, %d>),"
 							" geno %d%d%d is LOW\n",
-							tid, thread_combination[0], thread_combination[1],
-							thread_combination[2], i, j ,k);
+							tid, *thread_combination, *(thread_combination + 1),
+							*(thread_combination + 2), i, j ,k);
 						}
 					
 					}
@@ -182,7 +182,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 		if (tid == TESTCOMB){
 		printf("snp comb. <%d, %d, %d> (tid %d) TRAIN error %1.5f = (%d+%d)/(%d+%d+%d+%d)\n", 
-				thread_combination[0], thread_combination[1], thread_combination[2], tid,
+				*(thread_combination + 0), *(thread_combination + 1), *(thread_combination + 2), tid,
 				train_error, high_controls, low_cases, high_cases, high_controls, low_cases, low_controls);
 		}
 
@@ -200,9 +200,9 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 if ((n < int(cv/float(CV)*NIND)) || (n > int((cv+1)/float(CV)*NIND)) )//reserved for training
 			 	continue;
 			 ind = *(dev_cv_indices + n);
-			 f = thread_geno[0 * NIND + ind]; //1st snp geno
-			 s = thread_geno[1 * NIND + ind]; //2nd snp geno
-			 t = thread_geno[2 * NIND + ind]; //3rd snp geno
+			 f = (thread_geno + 0 * NIND + ind); //1st snp geno
+			 s = (thread_geno + 1 * NIND + ind); //2nd snp geno
+			 t = (thread_geno + 2 * NIND + ind); //3rd snp geno
 			 int ph = int(*(dev_v_pheno + ind));
 			 //check if fst is in high or low
 			 for (int i=0; i< (3*3*3); i++) {
@@ -233,7 +233,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 		if (tid == TESTCOMB){
 		printf("snp comb. <%d, %d, %d> (tid %d) TEST error %1.5f = (%d+%d)/(%d+%d+%d+%d)\n", 
-				thread_combination[0], thread_combination[1], thread_combination[2], tid,
+				*(thread_combination + 0), *(thread_combination + 1), *(thread_combination + 2), tid,
 				test_error, high_controls_test, low_cases_test, high_cases_test, high_controls_test, low_cases_test, low_controls_test);
 		}
 		
