@@ -6,6 +6,7 @@
 
 #define IDX(i,j,ld) (((i)*(ld))+(j))
 #define imin(a,b) (a<b?a:b)
+#define imax(a,b) (a>b?a:b)
 
 //const int GSx = imin( 32, (NUMCOMBS+BSx-1) / BSx );
 
@@ -25,7 +26,7 @@ char* combFile;
 
 #define mat_SNP_size (NIND * NSNPS * sizeof(int))
 #define v_pheno_size (NIND * sizeof(int))
-#define output_size (NUMCOMBS * CV * 2 * sizeof(float)) //2 is one for train and one for test
+#define output_size (NUMCOMBS * imax(CV,-1) * 2 * sizeof(float)) //2 is one for train and one for test
 #define combinations_size (NUMCOMBS * ORDER * sizeof(int))
 #define indices_size (NIND * sizeof(int))
 
@@ -131,7 +132,6 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			}
 		}
 		}
-		__syncthreads();
 		printf("e\n");
 	
 	
