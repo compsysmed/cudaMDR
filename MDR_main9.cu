@@ -615,12 +615,12 @@ int main(int argc, char **argv)
 	
 	if (THR < 0){
 		int c = 0;
-		for (int i = 0; i < v_pheno_size; i++){
+		for (int i = 0; i < NIND; i++){
 			if ( *(v_pheno + i) )
 				c += 1;
 		}
-		THR = float(c)/v_pheno_size;
-		printf("no input threshold; automatically set to %f = %d/%d \n", THR, c, v_pheno_size);
+		THR = float(c)/NIND;
+		printf("no input threshold; automatically set to %f = %d/%d \n", THR, c, NIND);
 	}
 	
 	
