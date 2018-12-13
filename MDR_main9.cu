@@ -83,8 +83,9 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 	
 	// CASE no CV
-	if (CV == -1){
-	
+	if (1 < 2){
+		
+		
 		struct controlscases thread_table[3][3][3];
 	
 		//replace this initialization?
