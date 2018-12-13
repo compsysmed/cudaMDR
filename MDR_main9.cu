@@ -226,10 +226,12 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 				 }
 			}
 		 	 //not in high_cases, it's low
-		 	 if (ph)
-			 	low_cases_test += 1;
-			 else
-			 	low_controls_test += 1;
+		 	 if (high_genos[i][0] == 9){ //not found in high
+			 	 if (ph)
+				 	low_cases_test += 1;
+				 else
+				 	low_controls_test += 1;
+			 }
 			 
 			
 	
