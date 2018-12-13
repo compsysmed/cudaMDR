@@ -436,7 +436,12 @@ void print_cudaGetDeviceProperties(){
 //MAIN
 /************************/
 
-int main(void){
+int main(int argc, char **argv)
+{
+
+	//Parsing the input parameters
+	parseArgs(argc,argv);
+	 
 	 
   	//print_cudaGetDeviceProperties(); 
   	int dev_id = 1;
