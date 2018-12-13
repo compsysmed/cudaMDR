@@ -249,7 +249,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 void parseArgs(int argc, char **argv){
   int i=1;
   if(argc <= 1){
-    printf("\nusage example: \n  cudaMDR -cf \"../combs\" -n_combs 3000 -gf \"../geno.gen\" -n_inds 3000 -n_snps 20000 -pf \"../pheno.phen\" -ord 4 -thr 0.2 -cv 3 -bs 256 -out \"res.out\"  \n\n");
+  
+    printf("\nusage example: \n  ./MDR_main9 -cf \"../combinations7\" -n_combs 3200000 -gf \"../geno7\" -n_inds 6000 -n_snps 20000 -pf \"../pheno7\" -ord 3 -thr 1 -cv 1 -bs 256 -out \"../out7\"  \n\n");
     printf("\tcf      = combinations file, see README\n");
     printf("\tn_combs			= number of combinations\n");
     printf("\tgf      = genotype file, see README\n");
@@ -279,6 +280,8 @@ void parseArgs(int argc, char **argv){
       NSNPS = atoi(argv[++i]);
     else if(!strcmp(argv[i], "-n_inds"))
       NIND = atoi(argv[++i]);
+    else if(!strcmp(argv[i], "-n_combs"))
+      NUMCOMBS = atoi(argv[++i]);
     else if(!strcmp(argv[i], "-ord"))
       ORDER = atoi(argv[++i]);
     else if(!strcmp(argv[i], "-thr"))
@@ -289,8 +292,8 @@ void parseArgs(int argc, char **argv){
       outputFile = argv[++i];
     else if(!strcmp(argv[i], "-bs"))
       BSx = atoi(argv[++i]);
-    else if(!strcmp(argv[i], "-help")){
-	    printf("\nusage example: \n  cudaMDR -cf \"../combs\" -n_combs 3000 -gf \"../geno.gen\" -n_inds 3000 -n_snps 20000 -pf \"../pheno.phen\" -ord 4 -thr 0.2 -cv 3 -bs 256 -out \"res.out\"  \n\n");
+    else if(!strcmp(argv[i], "-help")) || !strcmp(argv[i], "-h")){
+    printf("\nusage example: \n  ./MDR_main9 -cf \"../combinations7\" -n_combs 3200000 -gf \"../geno7\" -n_inds 6000 -n_snps 20000 -pf \"../pheno7\" -ord 3 -thr 1 -cv 1 -bs 256 -out \"../out7\"  \n\n");
 	    printf("\tcf      = combinations file, see README\n");
 	    printf("\tn_combs			= number of combinations\n");
 	    printf("\tgf      = genotype file, see README\n");
