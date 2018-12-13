@@ -87,7 +87,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		
 
 		if (tid == TESTCOMB){
-			printf("\n******************************\nthread %d, iteration of CV %d/%d:\n\n", tid, cv, CV);
+			printf("\n******************************\nthread %d, iteration of CV %d/%d:\n\n", tid, cv+1, CV);
 			printf("train interval:(0;%d) U (%d;%d)\n", int((cv/float(CV))*NIND), int(((cv+1)/float(CV))*NIND), NIND);
 			printf("test interval: [%d;%d]\n", int((cv/float(CV))*NIND), int(((cv+1)/float(CV))*NIND));
 		}
@@ -189,7 +189,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		}
 
 		//write result to global memory
-		*(dev_output + NUMCOMBS * cv + tid + 0) = train_error;
+		*(dev_output + NUMCOMBS * cv + 2 * tid + 0) = train_error;
 	
 		//*****************
 		//TESTING
@@ -199,7 +199,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		int low_cases_test = 0;
 		int low_controls_test = 0;
 		for (int n=0; n< NIND; n++) {
-			 if ((n < int(cv/float(CV)*NIND)) || (n > int((cv+1)/float(CV)*NIND)) )//reserved for training
+			 if ((n < int((cv/float(CV))*NIND)) || (n > int(((cv+1)/float(CV))*NIND)) )//reserved for training
 			 	continue;
 			 ind = *(dev_cv_indices + n);
 			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
@@ -240,7 +240,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		}
 		
 		//write result to global memory
-		*(dev_output + NUMCOMBS * cv + tid + 1) = test_error;
+		*(dev_output + NUMCOMBS * cv + 2 * tid + 1) = test_error;
 	
 
 	}
