@@ -55,7 +55,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	//printf(" %d + %d * %d :", threadIdx.x, blockIdx.x, blockDim.x);
 	//__shared__ float cache[BS][threadsPerBlock];
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
-	//printf(" %d ", tid);
+	printf(" %d ", tid);
 	int* thread_combination = (int*)malloc(ORDER * sizeof(int));
 	//int thread_combination =[ORDER]; //a combination (thread level)
 	//retrieve the combination indices
