@@ -292,8 +292,8 @@ void parseArgs(int argc, char **argv){
     else if(!strcmp(argv[i], "-out"))
       outputFile = argv[++i];
     else if(!strcmp(argv[i], "-bs"))
-      int a = 1;
       //BSx = 12500; //atoi(argv[++i]);
+      ++i;
     else if(!strcmp(argv[i], "-help") || !strcmp(argv[i], "-h")){
     printf("\nusage example: \n  ./MDR_main9 -cf \"../combinations7\" -n_combs 3200000 -gf \"../geno7\" -n_inds 6000 -n_snps 20000 -pf \"../pheno7\" -ord 3 -thr 1 -cv 1 -bs 256 -out \"../out7\"  \n\n");
 	    printf("cf      = combinations file, see README\n");
