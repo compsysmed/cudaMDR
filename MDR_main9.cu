@@ -303,7 +303,7 @@ void parseArgs(int argc, char **argv){
 	    printf("ord     = order to test, see README (optional)\n");
 	    printf("thr		= threshold for cases/controls ratio (optional)\n");
 	    printf("cv		= k in k-fold CV (optional)\n");
-	    printf("bs     =  # threads per block\n");
+	    printf("bs     =  number of threads per block\n");
 	    printf("out       = output file\n");
 	    printf("help       = print this help\n");
 	    printf("\n\n");
