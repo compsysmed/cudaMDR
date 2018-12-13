@@ -13,8 +13,8 @@ int NSNPS;
 int NIND;
 int THR = 1;
 int BSx = 256;
-int GSx = ((NUMCOMBS+BSx-1) / BSx );
 int NUMCOMBS;
+int GSx = ((NUMCOMBS+BSx-1) / BSx );
 int ORDER = 3;
 int CV = 1;
 char* phenoFile;
@@ -47,7 +47,16 @@ __device__ int dev_rand() {
 __constant__ int dev_v_pheno[6000];
 __constant__ int dev_cv_indices[6000];
 
-__global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinations ) {
+int NSNPS;
+int NIND;
+float THR = 1;
+int BSx = 256;
+int NUMCOMBS;
+int GSx = ((NUMCOMBS+BSx-1) / BSx );
+int ORDER = 3;
+int CV = 1;
+
+__global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinations, int NSNPS, int NIND, float THR, int NUMCOMBS, int ORDER, int CV ) {
     
     	
 	//printf(" %d + %d * %d :", threadIdx.x, blockIdx.x, blockDim.x);
@@ -516,7 +525,7 @@ int main(void){
 	float elapsedTime;
 	cudaEventRecord(start, 0);
 
-	MDR<<< dimGrid, dimBlock >>>(dev_mat_SNP, dev_output, dev_combinations);
+	MDR<<< dimGrid, dimBlock >>>(dev_mat_SNP, dev_output, dev_combinations, NSNPS, NIND, THR, NUMCOMBS, ORDER, CV);
 	cudaEventRecord(stop,0);
 	cudaEventSynchronize(stop);
 	cudaEventElapsedTime(&elapsedTime,start,stop);
