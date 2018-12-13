@@ -103,7 +103,10 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		
 		//populate the 3^ORDER-tot-entries table
 		int f,s,t,ind;
-		for (int n=0; n< NIND; n++) { //first NIND_TRAIN of NIND are for train
+		int cv = 2;
+		for (int n=0; n< NIND; n++) {
+		if ((n >= int((cv/float(CV))*NIND)) && (n <= ((cv+1)/float(CV))*NIND )) //reserved for test
+			 	continue;
 			 ind = *(dev_cv_indices + n);
 			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
 			 s = *(&thread_geno[0] + 1 * NIND + ind); //2nd snp geno
@@ -130,7 +133,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			}
 		}
 		}
-	
+		
+		printf("e\n");
 	
 	
 		//moving two a two-dim variable
