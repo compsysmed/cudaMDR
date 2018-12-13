@@ -106,9 +106,9 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 if ((n >= int((cv/float(CV))*NIND)) && (n <= ((cv+1)/float(CV))*NIND )) //reserved for test
 			 	continue;
 			 ind = *(dev_cv_indices + n);
-			 f = (thread_geno + 0 * NIND + ind); //1st snp geno
-			 s = (thread_geno + 1 * NIND + ind); //2nd snp geno
-			 t = (thread_geno + 2 * NIND + ind); //3rd snp geno
+			 f = *(thread_geno + 0 * NIND + ind); //1st snp geno
+			 s = *(thread_geno + 1 * NIND + ind); //2nd snp geno
+			 t = *(thread_geno + 2 * NIND + ind); //3rd snp geno
 			 if (int(*(dev_v_pheno + ind))) //get the pheno
 			 	thread_table[f][s][t].cases += 1;
 			 else
@@ -200,9 +200,9 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 if ((n < int(cv/float(CV)*NIND)) || (n > int((cv+1)/float(CV)*NIND)) )//reserved for training
 			 	continue;
 			 ind = *(dev_cv_indices + n);
-			 f = (thread_geno + 0 * NIND + ind); //1st snp geno
-			 s = (thread_geno + 1 * NIND + ind); //2nd snp geno
-			 t = (thread_geno + 2 * NIND + ind); //3rd snp geno
+			 f = *(thread_geno + 0 * NIND + ind); //1st snp geno
+			 s = *(thread_geno + 1 * NIND + ind); //2nd snp geno
+			 t = *(thread_geno + 2 * NIND + ind); //3rd snp geno
 			 int ph = int(*(dev_v_pheno + ind));
 			 //check if fst is in high or low
 			 for (int i=0; i< (3*3*3); i++) {
