@@ -581,7 +581,7 @@ int main(int argc, char **argv)
 	float* dev_output;
 	
 	if (CV < 0){
-		printf("no input cv; will run only one pass, no train-test... %f \n");
+		printf("no input cv; will run only one pass, no train-test... \n");
 	}
 
 	//generate a permutation of the individuals indices
