@@ -11,7 +11,7 @@
 
 int NSNPS;
 int NIND;
-float THR = 1.0;
+float THR = -1.0;
 int BSx = 256;
 int NUMCOMBS;
 //int GSx = ((NUMCOMBS+BSx-1) / BSx );
@@ -491,6 +491,18 @@ int main(int argc, char **argv)
 	printf("geno file read..\n");
 	readintData(phenoFile, NIND, 1, v_pheno);
 	printf("pheno file read..\n");
+	
+	if (THR < 0){
+		int c = 0;
+		for (int i = 0; i < v_pheno_size; i++){
+			if ( *(v_pheno + i) )
+				c += 1
+		}
+		THR = float(c)/v_pheno_size
+		printf("threshold automatically set to %f \n", THR);
+	}
+	
+	
 	
 	//Read combinations
 	readCombinations(combFile, NUMCOMBS, ORDER, combinations);
