@@ -29,7 +29,7 @@ char* combFile;
 #define combinations_size (NUMCOMBS * ORDER * sizeof(int))
 #define indices_size (NIND * sizeof(int))
 
-#define TESTCOMB 0
+#define TESTCOMB -1
 
 
 struct controlscases {
@@ -198,13 +198,15 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		int high_controls_test = 0;
 		int low_cases_test = 0;
 		int low_controls_test = 0;
+		int count = 0;
 		for (int n=0; n< NIND; n++) {
-			if (tid == TESTCOMB - 1)
-				printf("n: %d....  \n", n);
+			if (tid == TESTCOMB + 1)
+				printf("cv, n: %d, %d....  \n", cv, n);
 			 if ((n < int((cv/float(CV))*NIND)) || (n > int(((cv+1)/float(CV))*NIND)) )//reserved for training
 			 	continue;
-			 if (tid == TESTCOMB - 1)
-				printf(" rejected!  \n");
+			 if (tid == TESTCOMB + 1)
+				printf(" accepted!  \n");
+				count +=1
 			 ind = *(dev_cv_indices + n);
 			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
 			 s = *(&thread_geno[0] + 1 * NIND + ind); //2nd snp geno
@@ -233,6 +235,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 		}
 		
+		if (tid == TESTCOMB + 1) printf("cv, COUNTER: %d, %d....  \n", cv, counter);
 		//printf("******************\n");
 		float test_error = float(high_controls_test + low_cases_test)/float(high_cases_test + high_controls_test + low_cases_test + low_controls_test);
 	
