@@ -4,43 +4,31 @@
 //#include "MDR_kernel.cu"
 //#include "MDR.cu"
 
-#define ORDER 3
-/*
-
-#define BSx 2
-#define BSy 1
-#define BSz 1
-
-#define GSx 2
-#define GSy 1
-#define GSz 1
-*/
 #define IDX(i,j,ld) (((i)*(ld))+(j))
 #define imin(a,b) (a<b?a:b)
 
-const int NUMCOMBS = 3200000;
-const int BSx = 256;
 //const int GSx = imin( 32, (NUMCOMBS+BSx-1) / BSx );
-const int GSx = (NUMCOMBS+BSx-1) / BSx ;
-#define NSNPS 20000 //rows of input file
-#define NIND 6000  //columns of input file
-#define THR 0.1
 
-#define CV 3
-
-#define TESTCOMB 999
+int NSNPS;
+int NIND;
+int THR = -1;
+int NUMCOMBS = 3200000;
+int BSx = 256;
+int GSx = ((NUMCOMBS+BSx-1) / BSx );
+int NUMCOMBS;
+int ORDER = 3;
+int CV = 1;
+char* phenoFile;
+char* genoFile;
+char* outputFile;
+char* combFile;
 
 #define mat_SNP_size (NIND * NSNPS * sizeof(int))
 #define v_pheno_size (NIND * sizeof(int))
-#define output_size (NUMCOMBS * CV * 2 * sizeof(float)) //2 is for train and test
+#define output_size (NUMCOMBS * CV * 2 * sizeof(float)) //2 is one for train and one for test
 #define combinations_size (NUMCOMBS * ORDER * sizeof(int))
 #define indices_size (NIND * sizeof(int))
 
-
-char phenoFile[] = "pheno7";
-char genoFile[] = "geno7";
-char outputFile[] = "output7";
-char combFile[] = "combinations7";
 
 
 struct controlscases {
@@ -252,6 +240,94 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 
 	}
+}
+
+int NSNPS;
+int NIND;
+int THR = -1;
+int BSx = 3200000;
+int GSx = 256;
+int NUMCOMBS;
+int ORDER = 3;
+int CV = 1;
+char* phenoFile;
+char* genoFile;
+char* outputFile;
+char* combFile;
+
+
+void parseArgs(int argc, char **argv){
+  int i=1;
+  if(argc <= 1){
+    printf("\nusage example: \n  cudaMDR -cf \"../combs\" -n_combs 3000 -gf \"../geno.gen\" -n_inds 3000 -n_snps 20000 -pf \"../pheno.phen\" -ord 4 -thr 0.2 -cv 3 -bs 256 -out \"res.out\"  \n\n");
+    printf("\tcf      = combinations file, see README\n");
+    printf("\tn_combs			= number of combinations\n");
+    printf("\tgf      = genotype file, see README\n");
+    printf("\tn_inds			= number of individuals\n");
+    printf("\tn_snps			= number of SNPs\n");
+    printf("\tpf     = phenotype file, see README\n");
+    printf("\tord     = order to test, see README (optional)\n");
+    printf("\tthr		= threshold for cases/controls ratio (optional)\n");
+    printf("\tcv		= k in k-fold CV (optional)\n");
+    printf("\tbs     =  # threads per block\n");
+    printf("\tout       = output file\n");
+    printf("\thelp       = print this help\n");
+	printf("\n\n");
+    exit(0);
+  }
+
+  while(i<argc){
+    if(!strcmp(argv[i], "-gf"))
+      genoFile = argv[++i];
+    else if(!strcmp(argv[i], "-cf"))
+      combFile = argv[++i];
+    else if(!strcmp(argv[i], "-pf"))
+      phenoFile = argv[++i];
+    else if(!strcmp(argv[i], "-out"))
+      outputFile = argv[++i];
+    else if(!strcmp(argv[i], "-n_snps"))
+      NSNPS = atoi(argv[++i]);
+    else if(!strcmp(argv[i], "-n_inds"))
+      NIND = atoi(argv[++i]);
+    else if(!strcmp(argv[i], "-ord"))
+      ORDER = atoi(argv[++i]);
+    else if(!strcmp(argv[i], "-thr"))
+      THR = atof(argv[++i]);
+    else if(!strcmp(argv[i], "-cv"))
+      CV = atoi(argv[++i]);
+    else if(!strcmp(argv[i], "-out"))
+      results = argv[++i];
+    else if(!strcmp(argv[i], "-bs"))
+      BSx = atoi(argv[++i]);
+    else if(!strcmp(argv[i], "-help"))
+      printf("\nusage example: \n  cudaMDR -cf \"../combs\" -n_combs 3000 -gf \"../geno.gen\" -n_inds 3000 -n_snps 20000 -pf \"../pheno.phen\" -ord 4 -thr 0.2 -cv 3 -bs 256 -out \"res.out\"  \n\n");
+    printf("\tcf      = combinations file, see README\n");
+    printf("\tn_combs			= number of combinations\n");
+    printf("\tgf      = genotype file, see README\n");
+    printf("\tn_inds			= number of individuals\n");
+    printf("\tn_snps			= number of SNPs\n");
+    printf("\tpf     = phenotype file, see README\n");
+    printf("\tord     = order to test, see README (optional)\n");
+    printf("\tthr		= threshold for cases/controls ratio (optional)\n");
+    printf("\tcv		= k in k-fold CV (optional)\n");
+    printf("\tbs     =  # threads per block\n");
+    printf("\tout       = output file\n");
+    printf("\thelp       = print this help\n");
+	printf("\n\n");
+     
+   
+    else{
+      fprintf(stderr,"%s : argument not valid! \n",argv[i]);
+      exit(1);
+    }
+    i++;
+  }
+
+  if( !genoFile || || !phenoFile || !combFile || !outputFile){
+    fprintf(stderr,"more arguments needed.. exiting\n");
+    exit(1);
+  }
+
 }
 
 
