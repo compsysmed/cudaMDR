@@ -198,7 +198,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		int high_controls_test = 0;
 		int low_cases_test = 0;
 		int low_controls_test = 0;
-		int count = 0;
+		int counter = 0;
 		for (int n=0; n< NIND; n++) {
 			if (tid == TESTCOMB + 1)
 				printf("cv, n: %d, %d....  \n", cv, n);
@@ -206,7 +206,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 	continue;
 			 if (tid == TESTCOMB + 1)
 				printf(" accepted!  \n");
-				count +=1
+				counter +=1
 			 ind = *(dev_cv_indices + n);
 			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
 			 s = *(&thread_geno[0] + 1 * NIND + ind); //2nd snp geno
