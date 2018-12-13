@@ -26,7 +26,7 @@ char* combFile;
 
 #define mat_SNP_size (NIND * NSNPS * sizeof(int))
 #define v_pheno_size (NIND * sizeof(int))
-#define output_size (NUMCOMBS * imax(CV,-1) * 2 * sizeof(float)) //2 is one for train and one for test
+#define output_size (NUMCOMBS * 1 * 2 * sizeof(float)) //2 is one for train and one for test
 #define combinations_size (NUMCOMBS * ORDER * sizeof(int))
 #define indices_size (NIND * sizeof(int))
 
