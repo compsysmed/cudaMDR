@@ -99,7 +99,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 					thread_table[i][j][k].cases = 0;
 					}}}
 		
-		__syncthreads();
+		
 		printf("c\n");
 		
 		//populate the 3^ORDER-tot-entries table
@@ -114,7 +114,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 else
 			 	thread_table[f][s][t].controls += 1;
 		}
-	
+		__syncthreads();
 		printf("d\n");
 		//only a print
 	
