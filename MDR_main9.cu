@@ -114,7 +114,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 else
 			 	thread_table[f][s][t].controls += 1;
 		}
-		__syncthreads();
+		
 		printf("d\n");
 		//only a print
 	
@@ -131,7 +131,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			}
 		}
 		}
-		
+		__syncthreads();
 		printf("e\n");
 	
 	
