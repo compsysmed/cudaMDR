@@ -292,20 +292,20 @@ void parseArgs(int argc, char **argv){
       outputFile = argv[++i];
     else if(!strcmp(argv[i], "-bs"))
       BSx = atoi(argv[++i]);
-    else if(!strcmp(argv[i], "-help")) || !strcmp(argv[i], "-h")){
+    else if(!strcmp(argv[i], "-help") || !strcmp(argv[i], "-h")){
     printf("\nusage example: \n  ./MDR_main9 -cf \"../combinations7\" -n_combs 3200000 -gf \"../geno7\" -n_inds 6000 -n_snps 20000 -pf \"../pheno7\" -ord 3 -thr 1 -cv 1 -bs 256 -out \"../out7\"  \n\n");
-	    printf("\tcf      = combinations file, see README\n");
-	    printf("\tn_combs			= number of combinations\n");
-	    printf("\tgf      = genotype file, see README\n");
-	    printf("\tn_inds			= number of individuals\n");
-	    printf("\tn_snps			= number of SNPs\n");
-	    printf("\tpf     = phenotype file, see README\n");
-	    printf("\tord     = order to test, see README (optional)\n");
-	    printf("\tthr		= threshold for cases/controls ratio (optional)\n");
-	    printf("\tcv		= k in k-fold CV (optional)\n");
-	    printf("\tbs     =  # threads per block\n");
-	    printf("\tout       = output file\n");
-	    printf("\thelp       = print this help\n");
+	    printf("cf      = combinations file, see README\n");
+	    printf("n_combs			= number of combinations\n");
+	    printf("gf      = genotype file, see README\n");
+	    printf("n_inds			= number of individuals\n");
+	    printf("n_snps			= number of SNPs\n");
+	    printf("pf     = phenotype file, see README\n");
+	    printf("ord     = order to test, see README (optional)\n");
+	    printf("thr		= threshold for cases/controls ratio (optional)\n");
+	    printf("cv		= k in k-fold CV (optional)\n");
+	    printf("bs     =  # threads per block\n");
+	    printf("out       = output file\n");
+	    printf("help       = print this help\n");
 	    printf("\n\n");
     }
      
@@ -318,7 +318,7 @@ void parseArgs(int argc, char **argv){
   }
 
   if( !genoFile || !phenoFile || !combFile || !outputFile){
-    fprintf(stderr,"more arguments needed.. exiting\n");
+    fprintf(stderr,"no files specified	.. exiting\n");
     exit(1);
   }
   return;
