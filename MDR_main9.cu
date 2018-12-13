@@ -58,7 +58,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 	printf(" %d ", tid);
 	//int* thread_combination = (int*)malloc(ORDER * sizeof(int));
-	int thread_combination[ORDER]; //a combination (thread level)
+	int thread_combination[3]; //a combination (thread level)
 	//retrieve the combination indices
 	for (int i=0; i< ORDER; i++) {
 		*(&thread_combination + i) = *(dev_combinations + tid * ORDER + i);
@@ -68,7 +68,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 	//retrieve the genotype of each snp in the combination, from SNPvalues, for ALL individuals
 	//int* thread_geno = (int*)malloc(NIND * ORDER * sizeof(int));
-	int thread_geno[NIND * ORDER];
+	int thread_geno[18000];
 	for (int i=0; i< ORDER; i++) {
 		for (int j=0; j< NIND; j++) {
 			*(&thread_geno + i * NIND + j) = *(dev_SNP_values + NIND * *(&thread_combination + i) + j);
