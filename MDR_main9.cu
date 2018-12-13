@@ -206,7 +206,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 	continue;
 			 if (tid == TESTCOMB + 1)
 				printf(" accepted!  \n");
-				counter +=1
+				counter +=1;
 			 ind = *(dev_cv_indices + n);
 			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
 			 s = *(&thread_geno[0] + 1 * NIND + ind); //2nd snp geno
