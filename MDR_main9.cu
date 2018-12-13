@@ -28,6 +28,7 @@ char* combFile;
 #define combinations_size (NUMCOMBS * ORDER * sizeof(int))
 #define indices_size (NIND * sizeof(int))
 
+#define TESTCOMB 999
 
 
 struct controlscases {
@@ -68,7 +69,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	int thread_geno[NIND * ORDER];
 	for (int i=0; i< ORDER; i++) {
 		for (int j=0; j< NIND; j++) {
-			thread_geno[i * NIND + j] = *(dev_SNP_values + NIND * thread_combination[i] + j);
+			thread_geno[i * NIND + j] = *(dev_SNP_values + NIND * *(thread_combination + i) + j);
 		}
 	}
 	
@@ -149,8 +150,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 						if (tid == TESTCOMB){
 							printf("tid %d (comb. <%d, %d, %d>),"
 							" geno %d%d%d is HIGH\n",
-							tid, thread_combination[0], thread_combination[1],
-							thread_combination[2], i, j ,k);
+							tid, *thread_combination, *(thread_combination + 1),
+							*(thread_combination + 2), i, j ,k);
 						}
 					
 						high_genos[c][0] = i;
@@ -317,6 +318,7 @@ void parseArgs(int argc, char **argv){
     fprintf(stderr,"more arguments needed.. exiting\n");
     exit(1);
   }
+  return;
 
 }
 
