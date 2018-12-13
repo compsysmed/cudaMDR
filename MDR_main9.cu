@@ -86,11 +86,9 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	// CASE no CV
 	if (CV < 0){
 		
-		printf("a\n");
 		
 		struct controlscases thread_table[3][3][3];
-		
-		//printf("b\n");
+
 	
 		//replace this initialization?
 		for (int i=0; i< 3; i++) {
@@ -99,10 +97,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 					thread_table[i][j][k].controls = 0;
 					thread_table[i][j][k].cases = 0;
 					}}}
-		
-		
-		printf("c\n");
-		
+
 		//populate the 3^ORDER-tot-entries table
 		int f,s,t,ind;
 		for (int n=0; n< NIND; n++) {
@@ -115,8 +110,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 else
 			 	thread_table[f][s][t].controls += 1;
 		}
-		
-		printf("d\n");
+
 		//only a print
 	
 		if (tid == TESTCOMB){
@@ -132,8 +126,6 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			}
 		}
 		}
-		printf("e\n");
-	
 	
 		//moving two a two-dim variable
 		int high_cases = 0;
