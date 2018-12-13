@@ -186,7 +186,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 	}
 	
-	
+	/*
 	
 	//CV loop
 	for (int cv=0; cv<CV; cv++){
@@ -360,6 +360,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 
 	}
+	*/
 }
 
 
@@ -619,7 +620,7 @@ int main(int argc, char **argv)
 				c += 1;
 		}
 		THR = float(c)/v_pheno_size;
-		printf("no input threshold; automatically set to %f \n", THR);
+		printf("no input threshold; automatically set to %f = %d/%d \n", THR, c, v_pheno_size);
 	}
 	
 	
