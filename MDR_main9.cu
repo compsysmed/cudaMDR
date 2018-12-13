@@ -314,7 +314,7 @@ void parseArgs(int argc, char **argv){
     i++;
   }
 
-  if( !genoFile || || !phenoFile || !combFile || !outputFile){
+  if( !genoFile || !phenoFile || !combFile || !outputFile){
     fprintf(stderr,"more arguments needed.. exiting\n");
     exit(1);
   }
