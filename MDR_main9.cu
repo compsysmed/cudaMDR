@@ -562,7 +562,7 @@ int main(int argc, char **argv)
   		fprintf(fpout,"---------- CV %d/%d train_error test_error ----------\n", cv+1, CV);
 		for (int j = 0; j < NUMCOMBS; j++){
 			fprintf(fpout,"<snp%d,snp%d,snp%d> %f %f\n", *(combinations + j),*(combinations + j + 1), 
-			*(combinations + j + 2), *(output + cv * NUMCOMBS + j), *(output + cv * NUMCOMBS + j + 1));
+			*(combinations + j + 2), *(output + cv * NUMCOMBS + 2 * j), *(output + cv * NUMCOMBS + 2 * j + 1));
 		
 		}
 	}
