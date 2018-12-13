@@ -11,8 +11,7 @@
 
 int NSNPS;
 int NIND;
-int THR = -1;
-int NUMCOMBS = 3200000;
+int THR = 1;
 int BSx = 256;
 int GSx = ((NUMCOMBS+BSx-1) / BSx );
 int NUMCOMBS;
@@ -45,8 +44,8 @@ __device__ int dev_rand() {
 //#include "MDR.h"
 //#include "MDR.cu"
 
-__constant__ int dev_v_pheno[NIND];
-__constant__ int dev_cv_indices[NIND];
+__constant__ int dev_v_pheno[6000];
+__constant__ int dev_cv_indices[6000];
 
 __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinations ) {
     
@@ -242,18 +241,6 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	}
 }
 
-int NSNPS;
-int NIND;
-int THR = -1;
-int BSx = 3200000;
-int GSx = 256;
-int NUMCOMBS;
-int ORDER = 3;
-int CV = 1;
-char* phenoFile;
-char* genoFile;
-char* outputFile;
-char* combFile;
 
 
 void parseArgs(int argc, char **argv){
@@ -296,24 +283,25 @@ void parseArgs(int argc, char **argv){
     else if(!strcmp(argv[i], "-cv"))
       CV = atoi(argv[++i]);
     else if(!strcmp(argv[i], "-out"))
-      results = argv[++i];
+      outputFile = argv[++i];
     else if(!strcmp(argv[i], "-bs"))
       BSx = atoi(argv[++i]);
-    else if(!strcmp(argv[i], "-help"))
-      printf("\nusage example: \n  cudaMDR -cf \"../combs\" -n_combs 3000 -gf \"../geno.gen\" -n_inds 3000 -n_snps 20000 -pf \"../pheno.phen\" -ord 4 -thr 0.2 -cv 3 -bs 256 -out \"res.out\"  \n\n");
-    printf("\tcf      = combinations file, see README\n");
-    printf("\tn_combs			= number of combinations\n");
-    printf("\tgf      = genotype file, see README\n");
-    printf("\tn_inds			= number of individuals\n");
-    printf("\tn_snps			= number of SNPs\n");
-    printf("\tpf     = phenotype file, see README\n");
-    printf("\tord     = order to test, see README (optional)\n");
-    printf("\tthr		= threshold for cases/controls ratio (optional)\n");
-    printf("\tcv		= k in k-fold CV (optional)\n");
-    printf("\tbs     =  # threads per block\n");
-    printf("\tout       = output file\n");
-    printf("\thelp       = print this help\n");
-	printf("\n\n");
+    else if(!strcmp(argv[i], "-help")){
+	    printf("\nusage example: \n  cudaMDR -cf \"../combs\" -n_combs 3000 -gf \"../geno.gen\" -n_inds 3000 -n_snps 20000 -pf \"../pheno.phen\" -ord 4 -thr 0.2 -cv 3 -bs 256 -out \"res.out\"  \n\n");
+	    printf("\tcf      = combinations file, see README\n");
+	    printf("\tn_combs			= number of combinations\n");
+	    printf("\tgf      = genotype file, see README\n");
+	    printf("\tn_inds			= number of individuals\n");
+	    printf("\tn_snps			= number of SNPs\n");
+	    printf("\tpf     = phenotype file, see README\n");
+	    printf("\tord     = order to test, see README (optional)\n");
+	    printf("\tthr		= threshold for cases/controls ratio (optional)\n");
+	    printf("\tcv		= k in k-fold CV (optional)\n");
+	    printf("\tbs     =  # threads per block\n");
+	    printf("\tout       = output file\n");
+	    printf("\thelp       = print this help\n");
+	    printf("\n\n");
+    }
      
    
     else{
