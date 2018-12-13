@@ -186,7 +186,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 	}
 	
-	/*
+	
 	
 	//CV loop
 	for (int cv=0; cv<CV; cv++){
@@ -360,7 +360,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 
 	}
-	*/
+
 }
 
 
