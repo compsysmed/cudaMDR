@@ -11,7 +11,7 @@
 
 int NSNPS;
 int NIND;
-float THR = 1;
+float THR = 1.0;
 int BSx = 256;
 int NUMCOMBS;
 int GSx = ((NUMCOMBS+BSx-1) / BSx );
