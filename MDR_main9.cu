@@ -29,7 +29,7 @@ char* combFile;
 #define combinations_size (NUMCOMBS * ORDER * sizeof(int))
 #define indices_size (NIND * sizeof(int))
 
-#define TESTCOMB 999
+#define TESTCOMB 0
 
 
 struct controlscases {
@@ -199,8 +199,12 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		int low_cases_test = 0;
 		int low_controls_test = 0;
 		for (int n=0; n< NIND; n++) {
+			if (tid == TESTCOMB - 1)
+				printf("n: %d....  \n", n);
 			 if ((n < int((cv/float(CV))*NIND)) || (n > int(((cv+1)/float(CV))*NIND)) )//reserved for training
 			 	continue;
+			 if (tid == TESTCOMB - 1)
+				printf(" rejected!  \n");
 			 ind = *(dev_cv_indices + n);
 			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
 			 s = *(&thread_geno[0] + 1 * NIND + ind); //2nd snp geno
