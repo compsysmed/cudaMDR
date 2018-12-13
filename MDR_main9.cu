@@ -496,7 +496,7 @@ int main(int argc, char **argv)
 		int c = 0;
 		for (int i = 0; i < v_pheno_size; i++){
 			if ( *(v_pheno + i) )
-				c += 1
+				c += 1;
 		}
 		THR = float(c)/v_pheno_size;
 		printf("threshold automatically set to %f \n", THR);
