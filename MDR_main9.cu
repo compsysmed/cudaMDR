@@ -71,13 +71,13 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	int thread_geno[18000];
 	for (int i=0; i< ORDER; i++) {
 		for (int j=0; j< NIND; j++) {
-			*(&thread_geno + i * NIND + j) = *(dev_SNP_values + NIND * *(&thread_combination[0] + i) + j);
+			*(&thread_geno[0] + i * NIND + j) = *(dev_SNP_values + NIND * *(&thread_combination[0] + i) + j);
 		}
 	}
 	
 	if (tid == TESTCOMB){
 			for (int i=0; i< 20; i++) {
-				printf("thread %d %d-th-snp's geno: %d\n", tid, i, *(&thread_geno + i));
+				printf("thread %d %d-th-snp's geno: %d\n", tid, i, *(&thread_geno[0] + i));
 			}
 		}
 	
@@ -108,9 +108,9 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 if ((n >= int((cv/float(CV))*NIND)) && (n <= ((cv+1)/float(CV))*NIND )) //reserved for test
 			 	continue;
 			 ind = *(dev_cv_indices + n);
-			 f = *(&thread_geno + 0 * NIND + ind); //1st snp geno
-			 s = *(&thread_geno + 1 * NIND + ind); //2nd snp geno
-			 t = *(&thread_geno + 2 * NIND + ind); //3rd snp geno
+			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
+			 s = *(&thread_geno[0] + 1 * NIND + ind); //2nd snp geno
+			 t = *(&thread_geno[0] + 2 * NIND + ind); //3rd snp geno
 			 if (int(*(dev_v_pheno + ind))) //get the pheno
 			 	thread_table[f][s][t].cases += 1;
 			 else
@@ -202,9 +202,9 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 if ((n < int(cv/float(CV)*NIND)) || (n > int((cv+1)/float(CV)*NIND)) )//reserved for training
 			 	continue;
 			 ind = *(dev_cv_indices + n);
-			 f = *(&thread_geno + 0 * NIND + ind); //1st snp geno
-			 s = *(&thread_geno + 1 * NIND + ind); //2nd snp geno
-			 t = *(&thread_geno + 2 * NIND + ind); //3rd snp geno
+			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
+			 s = *(&thread_geno[0] + 1 * NIND + ind); //2nd snp geno
+			 t = *(&thread_geno[0] + 2 * NIND + ind); //3rd snp geno
 			 int ph = int(*(dev_v_pheno + ind));
 			 //check if fst is in high or low
 			 for (int i=0; i< (3*3*3); i++) {
