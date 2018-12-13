@@ -17,7 +17,7 @@ int NUMCOMBS;
 //int GSx = ((NUMCOMBS+BSx-1) / BSx );
 int GSx = 12500;
 int ORDER = 3;
-int CV = 1;
+int CV = -1;
 char* phenoFile;
 char* genoFile;
 char* outputFile;
@@ -80,6 +80,112 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 				printf("thread %d %d-th-snp's geno: %d\n", tid, i, *(&thread_geno[0] + i));
 			}
 		}
+	
+	
+	// CASE no CV
+	if (CV == -1){
+	
+		struct controlscases thread_table[3][3][3];
+	
+		//replace this initialization?
+		for (int i=0; i< 3; i++) {
+			for (int j=0; j< 3; j++) {
+				for (int k=0; k< 3; k++) {
+					thread_table[i][j][k].controls = 0;
+					thread_table[i][j][k].cases = 0;
+					}}}
+	
+		//populate the 3^ORDER-tot-entries table
+		int f,s,t,ind;
+		for (int n=0; n< NIND; n++) { //first NIND_TRAIN of NIND are for train
+			 ind = *(dev_cv_indices + n);
+			 f = *(&thread_geno[0] + 0 * NIND + ind); //1st snp geno
+			 s = *(&thread_geno[0] + 1 * NIND + ind); //2nd snp geno
+			 t = *(&thread_geno[0] + 2 * NIND + ind); //3rd snp geno
+			 if (int(*(dev_v_pheno + ind))) //get the pheno
+			 	thread_table[f][s][t].cases += 1;
+			 else
+			 	thread_table[f][s][t].controls += 1;
+		}
+	
+	
+		//only a print
+	
+		if (tid == TESTCOMB){
+		printf("\n***************\nthread %d\n:", tid);
+		for (int i=0; i< 3; i++) {
+			for (int j=0; j< 3; j++) {
+				for (int k=0; k< 3; k++) {
+					printf("thread_table[%d][%d][%d].controls=%d\n",i,j,k,thread_table[i][j][k].controls);
+					printf("thread_table[%d][%d][%d].cases=%d\n",i,j,k,thread_table[i][j][k].cases);
+					printf("\n");
+				
+				}
+			}
+		}
+		}
+	
+	
+	
+		//moving two a two-dim variable
+		int high_cases = 0;
+		int high_controls = 0;
+		int low_cases = 0;
+		int low_controls = 0;
+		int high_genos[3*3*3][3]; //content: 001,021,112,..,9xx,..: 3**ORDER strings, each 3 chars
+		int c = 0;
+		for (int i=0; i< 3; i++) {
+			for (int j=0; j< 3; j++) {
+				for (int k=0; k< 3; k++) {
+					if ((thread_table[i][j][k].cases)/(thread_table[i][j][k].controls + 0.01) >= THR){
+						high_cases += thread_table[i][j][k].cases;
+						high_controls += thread_table[i][j][k].controls;
+						if (tid == TESTCOMB){
+							printf("tid %d (comb. <%d, %d, %d>),"
+							" geno %d%d%d is HIGH\n",
+							tid, *(&thread_combination[0]), *(&thread_combination[0] + 1),
+							*(&thread_combination[0] + 2), i, j ,k);
+						}
+					
+						high_genos[c][0] = i;
+						high_genos[c][1] = j;
+						high_genos[c][2] = k;
+						c+=1;
+					}
+					else{
+						//here in LOW also the case 0 controls 0 cases
+						low_cases += thread_table[i][j][k].cases;
+						low_controls += thread_table[i][j][k].controls;
+						if (tid == TESTCOMB){
+							printf("tid %d (comb. <%d, %d, %d>),"
+							" geno %d%d%d is LOW\n",
+							tid, *(&thread_combination[0]), *(&thread_combination[0] + 1),
+							*(&thread_combination[0] + 2), i, j ,k);
+						}
+					
+					}
+				}
+			}
+		}
+		high_genos[c][0] = 9; //end sequence, since high_genos only reports the high ones
+	
+		//printf("******************\n");
+		float train_error = float(high_controls + low_cases)/float(high_cases + high_controls + low_cases + low_controls);
+	
+	
+		if (tid == TESTCOMB){
+		printf("snp comb. <%d, %d, %d> (tid %d) TRAIN error %1.5f = (%d+%d)/(%d+%d+%d+%d)\n", 
+				*(&thread_combination[0] + 0), *(&thread_combination[0] + 1), *(&thread_combination[0] + 2), tid,
+				train_error, high_controls, low_cases, high_cases, high_controls, low_cases, low_controls);
+		}
+
+		//write result to global memory
+		*(dev_output + NUMCOMBS * cv + 2 * tid + 0) = train_error;
+	
+	
+	
+	}
+	
 	
 	
 	//CV loop
@@ -473,8 +579,12 @@ int main(int argc, char **argv)
   	int* cv_indices = (int*)malloc(NIND * sizeof(int));
   	int* dev_mat_SNP;
 	float* dev_output;
+	
+	if (CV < 0){
+		printf("no input cv; will run only one pass, no train-test... %f \n");
+	}
 
-	//generate all indices for CV loop
+	//generate a permutation of the individuals indices
 	for(int i=0;i<NIND;++i){
         	*(cv_indices + i) = i;
     		}
@@ -509,7 +619,7 @@ int main(int argc, char **argv)
 				c += 1;
 		}
 		THR = float(c)/v_pheno_size;
-		printf("threshold automatically set to %f \n", THR);
+		printf("no input threshold; automatically set to %f \n", THR);
 	}
 	
 	
@@ -567,6 +677,14 @@ int main(int argc, char **argv)
 	
 	FILE *fpout;
 	fpout = fopen(outputFile, "w");
+	
+	if (CV < 0){
+		fprintf(fpout,"---------- error ----------\n", cv+1, CV);
+		for (int j = 0; j < NUMCOMBS; j++){
+			fprintf(fpout,"<snp%d,snp%d,snp%d> %f\n", *(combinations + j),*(combinations + j + 1), 
+			*(combinations + j + 2), *(output + cv * NUMCOMBS + 2 * j));
+	}
+	
 	
   	for (int cv = 0; cv < CV; cv++){
   		fprintf(fpout,"---------- CV %d/%d train_error test_error ----------\n", cv+1, CV);
