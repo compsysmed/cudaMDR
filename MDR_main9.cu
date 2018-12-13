@@ -29,7 +29,7 @@ char* combFile;
 #define combinations_size (NUMCOMBS * ORDER * sizeof(int))
 #define indices_size (NIND * sizeof(int))
 
-#define TESTCOMB -1
+#define TESTCOMB 999
 
 
 struct controlscases {
@@ -200,11 +200,11 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 		int low_controls_test = 0;
 		int counter = 0;
 		for (int n=0; n< NIND; n++) {
-			if (tid == TESTCOMB + 1)
+			if (tid == -1)
 				printf("cv, n: %d, %d....  \n", cv, n);
 			 if ((n < int((cv/float(CV))*NIND)) || (n > int(((cv+1)/float(CV))*NIND)) )//reserved for training
 			 	continue;
-			 if (tid == TESTCOMB + 1)
+			 if (tid == -1)
 				printf(" accepted!  \n");
 				counter +=1;
 			 ind = *(dev_cv_indices + n);
@@ -213,7 +213,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 			 t = *(&thread_geno[0] + 2 * NIND + ind); //3rd snp geno
 			 int ph = int(*(dev_v_pheno + ind));
 			 //check if fst is in high or low
-			 for (int i=0; i< (3*3*3); i++) {
+			 int i;
+			 for (i=0; i< (3*3*3); i++) {
 			 	 if (high_genos[i][0] == 9)
 			 	 	break;
 				 if  (high_genos[i][0] == f && high_genos[i][1] == s && high_genos[i][2] == t){
