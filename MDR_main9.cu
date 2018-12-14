@@ -13,10 +13,10 @@
 int NSNPS;
 int NIND;
 float THR = -1.0;
-int BSx = 256;
+int BSx = 1024;
 int NUMCOMBS;
 //int GSx = ((NUMCOMBS+BSx-1) / BSx );
-int GSx = 12500;
+int GSx = 313;
 int ORDER = 3;
 int CV = -1;
 char* phenoFile;
@@ -57,6 +57,11 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	//printf(" %d + %d * %d :", threadIdx.x, blockIdx.x, blockDim.x);
 	//__shared__ float cache[BS][threadsPerBlock];
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
+	//printf(" %d ", tid);
+
+	if (tid >= NUMCOMBS)
+		return;
+
 	//printf(" %d ", tid);
 	//int* thread_combination = (int*)malloc(ORDER * sizeof(int));
 	int thread_combination[3]; //a combination (thread level)
@@ -656,7 +661,7 @@ int main(int argc, char **argv)
 	dim3 dimGrid(GSx);//,GSy,GSz);
 	
 	printf("\ncalling the kernel with this configuration:\n");
-	printf(" interaction order: %d\n NSNPS: %d\n NIND: %d\n # cross validations: %d\n THRESHOLD: %f\n GRID SIZE: %d\n BLOCK SIZE: %d\n",ORDER, NSNPS, NIND, CV, THR, GSx, BSx);
+	printf(" interaction order: %d\n NSNPS: %d\n NIND: %d\n # CVs: %d\n THRESHOLD: %f\n BLOCK SIZE: %d\n GRID SIZE: %d\n",ORDER, NSNPS, NIND, CV, THR, BSx, GSx);
 
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
