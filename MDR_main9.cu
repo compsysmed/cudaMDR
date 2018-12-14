@@ -58,11 +58,11 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	//__shared__ float cache[BS][threadsPerBlock];
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 	//printf(" %d ", tid);
-	//int* thread_combination = (int*)malloc(ORDER * sizeof(int));
-	int thread_combination[3]; //a combination (thread level)
+	int* thread_combination = (int*)malloc(ORDER * sizeof(int));
+	//int thread_combination[3]; //a combination (thread level)
 	//retrieve the combination indices
 	for (int i=0; i< ORDER; i++) {
-		*(&thread_combination[0] + i) = *(dev_combinations + tid * ORDER + i);
+		*(thread_combination + i) = *(dev_combinations + tid * ORDER + i);
 	}
 	//printf("thread with tid %d is assigned combination: <%d, %d, %d>\n", tid, thread_combination[0], 
 	//thread_combination[1], thread_combination[2]); 
@@ -72,7 +72,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	int thread_geno[18000];
 	for (int i=0; i< ORDER; i++) {
 		for (int j=0; j< NIND; j++) {
-			*(&thread_geno[0] + i * NIND + j) = *(dev_SNP_values + NIND * *(&thread_combination[0] + i) + j);
+			*(&thread_geno[0] + i * NIND + j) = *(dev_SNP_values + NIND * *(thread_combination + i) + j);
 		}
 	}
 	
@@ -143,8 +143,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 						if (tid == TESTCOMB){
 							printf("tid %d (comb. <%d, %d, %d>),"
 							" geno %d%d%d is HIGH\n",
-							tid, *(&thread_combination[0]), *(&thread_combination[0] + 1),
-							*(&thread_combination[0] + 2), i, j ,k);
+							tid, *(thread_combination), *(thread_combination + 1),
+							*(thread_combination + 2), i, j ,k);
 						}
 					
 						high_genos[c][0] = i;
@@ -159,8 +159,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 						if (tid == TESTCOMB){
 							printf("tid %d (comb. <%d, %d, %d>),"
 							" geno %d%d%d is LOW\n",
-							tid, *(&thread_combination[0]), *(&thread_combination[0] + 1),
-							*(&thread_combination[0] + 2), i, j ,k);
+							tid, *(thread_combination), *(thread_combination + 1),
+							*(thread_combination + 2), i, j ,k);
 						}
 					
 					}
@@ -175,7 +175,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 		if (tid == TESTCOMB){
 		printf("snp comb. <%d, %d, %d> (tid %d) TRAIN error %1.5f = (%d+%d)/(%d+%d+%d+%d)\n", 
-				*(&thread_combination[0] + 0), *(&thread_combination[0] + 1), *(&thread_combination[0] + 2), tid,
+				*(thread_combination + 0), *(thread_combination + 1), *(thread_combination + 2), tid,
 				train_error, high_controls, low_cases, high_cases, high_controls, low_cases, low_controls);
 		}
 
@@ -258,8 +258,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 						if (tid == TESTCOMB){
 							printf("tid %d (comb. <%d, %d, %d>),"
 							" geno %d%d%d is HIGH\n",
-							tid, *(&thread_combination[0]), *(&thread_combination[0] + 1),
-							*(&thread_combination[0] + 2), i, j ,k);
+							tid, *(thread_combination), *(thread_combination + 1),
+							*(thread_combination + 2), i, j ,k);
 						}
 					
 						high_genos[c][0] = i;
@@ -274,8 +274,8 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 						if (tid == TESTCOMB){
 							printf("tid %d (comb. <%d, %d, %d>),"
 							" geno %d%d%d is LOW\n",
-							tid, *(&thread_combination[0]), *(&thread_combination[0] + 1),
-							*(&thread_combination[0] + 2), i, j ,k);
+							tid, *(thread_combination), *(thread_combination + 1),
+							*(thread_combination + 2), i, j ,k);
 						}
 					
 					}
@@ -290,7 +290,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 		if (tid == TESTCOMB){
 		printf("snp comb. <%d, %d, %d> (tid %d) TRAIN error %1.5f = (%d+%d)/(%d+%d+%d+%d)\n", 
-				*(&thread_combination[0] + 0), *(&thread_combination[0] + 1), *(&thread_combination[0] + 2), tid,
+				*(thread_combination + 0), *(thread_combination + 1), *(thread_combination + 2), tid,
 				train_error, high_controls, low_cases, high_cases, high_controls, low_cases, low_controls);
 		}
 
@@ -351,7 +351,7 @@ __global__ void MDR( int* dev_SNP_values, float* dev_output, int* dev_combinatio
 	
 		if (tid == TESTCOMB){
 		printf("snp comb. <%d, %d, %d> (tid %d) TEST error %1.5f = (%d+%d)/(%d+%d+%d+%d)\n", 
-				*(&thread_combination[0] + 0), *(&thread_combination[0] + 1), *(&thread_combination[0] + 2), tid,
+				*(thread_combination + 0), *(thread_combination + 1), *(thread_combination + 2), tid,
 				test_error, high_controls_test, low_cases_test, high_cases_test, high_controls_test, low_cases_test, low_controls_test);
 		}
 		
